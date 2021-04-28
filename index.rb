@@ -1,5 +1,14 @@
 require "pry"
 
+def tic_tac_toe
+  won = false
+  board = Board.new
+
+  until won || Square.all_checked?
+    turn(board)
+  end
+end
+
 def turn(board) # Temporary board argument
   puts "On what row would you like to play? (top, center or bottom)"
   row = gets.chomp.downcase
@@ -55,34 +64,45 @@ class Board
 end
 
 class Square
-  attr_reader :content, :row, :column
+  attr_reader :content, :row, :column, :checked
   @@instances = []
   @@check_sign = "X"
   def initialize(row, column)
     @content = " "
     @row = row
     @column = column
+    @checked = false
     @@instances.push(self)
   end
 
   def check
     self.content=(@@check_sign)
     @@check_sign == "X" ? @@check_sign = "O" : @@check_sign = "X"
+    self.checked=(true)
   end
 
   def self.instances
     @@instances
   end
 
+  def self.all_checked?
+    checked_squares = 0
+    draw = false
+
+    self.instances.each do |square|
+      checked_squares += 1 unless square.content == " "
+    end
+
+    if checked_squares == 9
+      draw = true
+      puts "This is a draw, play again?"
+    end
+    draw
+  end
+
   private
 
-  attr_writer :content
+  attr_writer :content, :checked
 end
 
-board = Board.new
-turn(board)
-turn(board)
-turn(board)
-turn(board)
-turn(board)
-turn(board)
+tic_tac_toe()
