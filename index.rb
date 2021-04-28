@@ -1,17 +1,25 @@
 require "pry"
 
-def turn
+def turn(board) # Temporary board argument
   puts "On what row would you like to play? (top, center or bottom)"
   row = gets.chomp.downcase
-  puts row
   puts "On what column would you like to play? (left, center or right)"
   column = gets.chomp.downcase
-  puts column
+  validate_inputs(row, column)
 
   board.print_state # Temporary print mechanism
 end
 
-def validate_inputs
+def validate_inputs(row, column)
+  valid = false
+  Square.instances.each do |square|
+    if square.row == row && square.column == column
+      square.check
+      valid = true
+      break
+    end
+  end
+  puts "Error: inputs do not match, try again" unless valid
 end
 
 class Board
@@ -70,4 +78,4 @@ class Square
 end
 
 board = Board.new
-puts Square.instances
+turn(board)
