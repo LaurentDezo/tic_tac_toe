@@ -17,15 +17,15 @@ end
 class Board
   attr_reader :top_left, :top, :top_right, :center_left, :center, :center_right, :bottom_left, :bottom, :bottom_right
   def initialize
-    @top_left = Square.new
-    @top = Square.new
-    @top_right = Square.new
-    @center_left = Square.new
-    @center = Square.new
-    @center_right = Square.new
-    @bottom_left = Square.new
-    @bottom = Square.new
-    @bottom_right = Square.new
+    @top_left = Square.new("top", "left")
+    @top = Square.new("top", "center")
+    @top_right = Square.new("top", "right")
+    @center_left = Square.new("center", "left")
+    @center = Square.new("center", "center")
+    @center_right = Square.new("center", "right")
+    @bottom_left = Square.new("bottom", "left")
+    @bottom = Square.new("bottom", "center")
+    @bottom_right = Square.new("bottom", "right")
   end
 
   def print_state
@@ -48,15 +48,21 @@ class Board
 end
 
 class Square
-  attr_reader :content
+  attr_reader :content, :row, :column
+  @@instances = []
   def initialize(row, column)
     @content = " "
     @row = row
     @column = column
+    @@instances.push(self)
   end
 
   def check
     self.content=("X")
+  end
+
+  def self.instances
+    @@instances
   end
 
   private
@@ -64,4 +70,4 @@ class Square
 end
 
 board = Board.new
-turn()
+puts Square.instances
