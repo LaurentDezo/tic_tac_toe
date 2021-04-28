@@ -1,6 +1,15 @@
 require "pry"
 
-class GameBoard
+def turn
+  puts "On what row would you like to play? (top, center or bottom)"
+  row = gets.chomp
+  puts "On what column would you like to play? (left, center or right)"
+  column = gets.chomp
+  puts row
+  puts column
+end
+
+class Board
   attr_reader :top_left, :top, :top_right, :center_left, :center, :center_right, :bottom_left, :bottom, :bottom_right
   def initialize
     @top_left = Square.new
@@ -47,11 +56,4 @@ class Square
   attr_writer :content
 end
 
-game = GameBoard.new
-game.print_state
-game.top_left.check
-game.print_state
-game.bottom_right.check
-game.print_state
-
-  
+turn()
