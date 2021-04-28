@@ -2,11 +2,16 @@ require "pry"
 
 def turn
   puts "On what row would you like to play? (top, center or bottom)"
-  row = gets.chomp
-  puts "On what column would you like to play? (left, center or right)"
-  column = gets.chomp
+  row = gets.chomp.downcase
   puts row
+  puts "On what column would you like to play? (left, center or right)"
+  column = gets.chomp.downcase
   puts column
+
+  board.print_state # Temporary print mechanism
+end
+
+def validate_inputs
 end
 
 class Board
@@ -44,8 +49,10 @@ end
 
 class Square
   attr_reader :content
-  def initialize
-    @content = " " 
+  def initialize(row, column)
+    @content = " "
+    @row = row
+    @column = column
   end
 
   def check
@@ -56,4 +63,5 @@ class Square
   attr_writer :content
 end
 
+board = Board.new
 turn()
