@@ -5,12 +5,11 @@ def turn(board) # Temporary board argument
   row = gets.chomp.downcase
   puts "On what column would you like to play? (left, center or right)"
   column = gets.chomp.downcase
-  validate_inputs(row, column)
-
+  validate(row, column)
   board.print_state # Temporary print mechanism
 end
 
-def validate_inputs(row, column)
+def validate(row, column)
   valid = false
   Square.instances.each do |square|
     if square.row == row && square.column == column
@@ -58,6 +57,7 @@ end
 class Square
   attr_reader :content, :row, :column
   @@instances = []
+  @@check_sign = "X"
   def initialize(row, column)
     @content = " "
     @row = row
@@ -66,7 +66,8 @@ class Square
   end
 
   def check
-    self.content=("X")
+    self.content=(@@check_sign)
+    @@check_sign == "X" ? @@check_sign = "O" : @@check_sign = "X"
   end
 
   def self.instances
@@ -74,8 +75,14 @@ class Square
   end
 
   private
+
   attr_writer :content
 end
 
 board = Board.new
+turn(board)
+turn(board)
+turn(board)
+turn(board)
+turn(board)
 turn(board)
