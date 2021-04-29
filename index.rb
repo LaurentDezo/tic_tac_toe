@@ -30,8 +30,15 @@ def validate(row, column)
   puts "Error: inputs do not match, try again" unless valid
 end
 
+def won?
+end
+
+def draw?
+end
+
 class Board
-  attr_reader :top_left, :top, :top_right, :center_left, :center, :center_right, :bottom_left, :bottom, :bottom_right
+  attr_reader :top_left, :top, :top_right, :center_left, :center, :center_right, :bottom_left, :bottom, :bottom_right,
+              :top_row, :center_row, :bottom_row, :left_column, :center_column, :right_column, :left_diagonal, :right_diagonal
   def initialize
     @top_left = Square.new("top", "left")
     @top = Square.new("top", "center")
@@ -42,6 +49,14 @@ class Board
     @bottom_left = Square.new("bottom", "left")
     @bottom = Square.new("bottom", "center")
     @bottom_right = Square.new("bottom", "right")
+    @top_row = Combination.new(top_left, top, top_right)
+    @center_row = Combination.new(center_left, center, center_right)
+    @bottom_row = Combination.new(bottom_left, bottom, bottom_right)
+    @left_column = Combination.new(top_left, center_left, bottom_left)
+    @center_column = Combination.new(top, center, bottom)
+    @right_column = Combination.new(top_right, center_right, bottom_right)
+    @left_diagonal = Combination.new(top_left, center, bottom_right)
+    @right_diagonal = Combination.new(bottom_left, center, top_right)
   end
 
   def print_state
@@ -66,7 +81,7 @@ end
 class Square
   attr_reader :content, :row, :column, :checked
   @@instances = []
-  @@check_sign = "X"
+  @@next_check = "X"
   def initialize(row, column)
     @content = " "
     @row = row
@@ -76,8 +91,8 @@ class Square
   end
 
   def check
-    self.content=(@@check_sign)
-    @@check_sign == "X" ? @@check_sign = "O" : @@check_sign = "X"
+    self.content=(@@next_check)
+    @@next_check == "X" ? @@next_check = "O" : @@next_check = "X"
     self.checked=(true)
   end
 
@@ -85,7 +100,7 @@ class Square
     @@instances
   end
 
-  def self.all_checked?
+  def self.all_checked? # this doesn't need to be in class, need to refactor
     checked_squares = 0
     draw = false
 
@@ -105,4 +120,12 @@ class Square
   attr_writer :content, :checked
 end
 
-tic_tac_toe()
+class Combination
+  attr_reader :squares
+  def initialize(square1, square2, square3)
+    @squares = [square1, square2, square3]
+  end
+end
+
+board = Board.new
+puts board.top_row.squares
