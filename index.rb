@@ -1,10 +1,9 @@
 require "pry"
 
 def tic_tac_toe
-  won = false
   board = Board.new
 
-  until won || Square.all_checked?
+  until won? || Square.all_checked?
     turn(board)
   end
 end
@@ -21,7 +20,7 @@ end
 def validate(row, column)
   valid = false
   Square.instances.each do |square|
-    if square.row == row && square.column == column
+    if square.row == row && square.column == column && !square.checked 
       square.check
       valid = true
       break
@@ -31,6 +30,12 @@ def validate(row, column)
 end
 
 def won?
+  won = false
+  Combination.instances.each do |combination|
+    (puts "X won"; won = true; break) if combination.squares.all? {|square| square.content == "X"}
+    (puts "O won"; won = true; break) if combination.squares.all? {|square| square.content == "O"}
+  end
+  won
 end
 
 def draw?
@@ -49,14 +54,14 @@ class Board
     @bottom_left = Square.new("bottom", "left")
     @bottom = Square.new("bottom", "center")
     @bottom_right = Square.new("bottom", "right")
-    @top_row = Combination.new(top_left, top, top_right)
-    @center_row = Combination.new(center_left, center, center_right)
-    @bottom_row = Combination.new(bottom_left, bottom, bottom_right)
-    @left_column = Combination.new(top_left, center_left, bottom_left)
-    @center_column = Combination.new(top, center, bottom)
-    @right_column = Combination.new(top_right, center_right, bottom_right)
-    @left_diagonal = Combination.new(top_left, center, bottom_right)
-    @right_diagonal = Combination.new(bottom_left, center, top_right)
+    Combination.new(top_left, top, top_right)
+    Combination.new(center_left, center, center_right)
+    Combination.new(bottom_left, bottom, bottom_right)
+    Combination.new(top_left, center_left, bottom_left)
+    Combination.new(top, center, bottom)
+    Combination.new(top_right, center_right, bottom_right)
+    Combination.new(top_left, center, bottom_right)
+    Combination.new(bottom_left, center, top_right)
   end
 
   def print_state
@@ -66,15 +71,15 @@ class Board
   private
 
    def board_state
-    "   |   |   \n" +
-    " #{top_left.content} | #{top.content} | #{top_right.content} \n" +
-    "___|___|___\n" +
-    "   |   |   \n" +
-    " #{center_left.content} | #{center.content} | #{center_right.content} \n" +
-    "___|___|___\n" +
-    "   |   |   \n" +
-    " #{bottom_left.content} | #{bottom.content} | #{bottom_right.content} \n" +
-    "   |   |   "
+    "     |     |     \n" +
+    "  #{top_left.content}  |  #{top.content}  |  #{top_right.content}  \n" +
+    "_____|_____|_____\n" +
+    "     |     |     \n" +
+    "  #{center_left.content}  |  #{center.content}  |  #{center_right.content}  \n" +
+    "_____|_____|_____\n" +
+    "     |     |     \n" +
+    "  #{bottom_left.content}  |  #{bottom.content}  |  #{bottom_right.content}  \n" +
+    "     |     |     "
    end
 end
 
@@ -122,10 +127,15 @@ end
 
 class Combination
   attr_reader :squares
+  @@instances = []
   def initialize(square1, square2, square3)
     @squares = [square1, square2, square3]
+    @@instances.push(self)
+  end
+
+  def self.instances
+    @@instances
   end
 end
 
-board = Board.new
-puts board.top_row.squares
+tic_tac_toe()
